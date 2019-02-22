@@ -1,4 +1,4 @@
-package com.applozic.mobicomkit.sample;
+package com.applozic.phonegap;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -243,4 +243,3 @@ class ChannelModel extends JsonMarker {
         this.channel = channel;
     }
 }
-
