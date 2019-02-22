@@ -152,9 +152,9 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
             intent.putExtra(ConversationUIService.TAKE_ORDER,true);
             cordova.getActivity().startActivity(intent);
         } else if (action.equals("launchChatWithGroupId")) {
-           
+
         AlChannelInfoTask.ChannelInfoListener listener = new AlChannelInfoTask.ChannelInfoListener() {
-            
+
             @Override
             public void onSuccess(AlChannelInfoTask.ChannelInfoModel channelInfoModel, String response, Context context) {
                 Intent intent = new Intent(context, ConversationActivity.class);
@@ -201,43 +201,44 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
         new AlChannelInfoTask(context, null, data.getString(0), false, listener).execute();
 
         } else if(action.equals("getGroupInfoWithClientGroupId")){
-            AlChannelInfoTask.ChannelInfoListener listener = new AlChannelInfoTask.ChannelInfoListener() {
-            @Override
-            public void onSuccess(AlChannelInfoTask.ChannelInfoModel channelInfoModel, String response, Context context) {
-                callback.success(channelInfoModel.toString());
-            }
 
-            @Override
-            public void onFailure(String response, Exception e, Context context) {
-                if(response != null){
-                callback.error(response);
-            } else if(e != null){
-                 callback.error(e.getMessage());
-                }
-            }
-        };
+          AlChannelInfoTask.ChannelInfoListener listener = new AlChannelInfoTask.ChannelInfoListener() {
+              @Override
+              public void onSuccess(String channelInfoModelJson, String response, Context context) {
+                 callback.success(channelInfoModelJson);
+              }
 
-        new AlChannelInfoTask(context, null, data.getString(0), true, listener).execute();
+              @Override
+              public void onFailure(String response, Exception e, Context context) {
+                  if(response != null){
+                      callback.error(response);
+                  }else if(e != null){
+                      callback.error(e.getMessage());
+                  }
+              }
+          };
+
+          new AlChannelInfoTask(context, null, data.getString(0), true, listener).execute();
 
         } else if(action.equals("getGroupInfoWithGroupId")){
 
-            AlChannelInfoTask.ChannelInfoListener listener = new AlChannelInfoTask.ChannelInfoListener() {
+          AlChannelInfoTask.ChannelInfoListener listener = new AlChannelInfoTask.ChannelInfoListener() {
             @Override
-            public void onSuccess(AlChannelInfoTask.ChannelInfoModel channelInfoModel, String response, Context context) {
-                callback.success(channelInfoModel.toString());
+            public void onSuccess(String channelInfoModelJson, String response, Context context) {
+               callback.success(channelInfoModelJson);
             }
 
             @Override
             public void onFailure(String response, Exception e, Context context) {
                 if(response != null){
-                callback.error(response);
-            }else if(e != null){
-                 callback.error(e.getMessage());
+                    callback.error(response);
+                }else if(e != null){
+                    callback.error(e.getMessage());
                 }
             }
         };
 
-        new AlChannelInfoTask(context, Integer.parseInt(data.getString(0)), null, true, listener).execute();
+        new AlChannelInfoTask(context,Integer.parseInt(data.getString(0)), null, true, listener).execute();
 
         }  else if (action.equals("startNew")) {
             Intent intent = new Intent(context, MobiComKitPeopleActivity.class);
@@ -297,7 +298,7 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
         task.execute();
 
         } else if (action.equals("createGroup")) {
-           
+
            ChannelInfo channelInfo = null;
 
         try {

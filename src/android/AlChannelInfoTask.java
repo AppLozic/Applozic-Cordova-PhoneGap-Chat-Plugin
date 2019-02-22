@@ -1,4 +1,4 @@
-package com.applozic.phonegap;
+package com.applozic.mobicomkit.sample;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -13,6 +13,7 @@ import com.applozic.mobicomkit.feed.ChannelFeedApiResponse;
 import com.applozic.mobicomkit.feed.ErrorResponseFeed;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.applozic.mobicommons.json.JsonMarker;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUserMapper;
 
@@ -103,7 +104,7 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
                     infoModel.setUserList(users);
                 }
                 infoModel.setChannel(model.getChannel());
-                listener.onSuccess(infoModel, "Success, found in local DB", context);
+                listener.onSuccess(GsonUtils.getJsonFromObject(infoModel,ChannelInfoModel.class), "Success, found in local DB", context);
             } else {
                 if (model.getChannelFeedApiResponse() != null) {
                     if (model.getChannelFeedApiResponse().isSuccess()) {
@@ -125,7 +126,7 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
                                 }
                                 infoModel.setChannel(channel);
 
-                                listener.onSuccess(infoModel, "Success, fetched from server", context);
+                                listener.onSuccess(GsonUtils.getJsonFromObject(infoModel,ChannelInfoModel.class), "Success, fetched from server", context);
                             }
                         }
                     } else {
@@ -143,7 +144,7 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
     }
 
     public interface ChannelInfoListener {
-        void onSuccess(ChannelInfoModel channelInfoModel, String response, Context context);
+        void onSuccess(String channelInfoModelJson, String response, Context context);
 
         void onFailure(String response, Exception e, Context context);
     }
@@ -213,7 +214,7 @@ public class AlChannelInfoTask extends AsyncTask<Void, Void, ChannelModel> {
     }
 }
 
-class ChannelModel {
+class ChannelModel extends JsonMarker {
     private ChannelFeedApiResponse channelFeedApiResponse;
     private Exception exception;
     private Channel channel;
