@@ -21,6 +21,11 @@ Note: For Ionic, use
 
     $ ionic cordova plugin add cordova-plugin-applozic
 
+AndroidX supported plugin:
+ If using latest version of ionic with androidX support, add the plugin as below:
+ 
+     $ ionic cordova plugin add cordova-plugin-applozic
+
 ## Android
 
 Open your `/YOUR_PROJECT_NAME/platforms/android/app/src/main/AndroidManifest.xml`
