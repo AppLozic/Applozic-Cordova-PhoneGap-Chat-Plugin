@@ -342,11 +342,17 @@
     [ALApplozicSettings setTitleForConversationScreen:@"Chats"];
     [ALApplozicSettings setTitleForBackButtonMsgVC:@"Back"];                /*  SET BACK BUTTON FOR MSG VC  */
     [ALApplozicSettings setTitleForBackButtonChatVC:@"Back"];               /*  SET BACK BUTTON FOR CHAT VC */
+    [ALApplozicSettings setDropShadowInNavigationBar:YES];                    /*  ENABLE / DISABLE DROPS IN SHADOW IN NAVIGATION BAR */
     /****************************************************************************************************************/
+
+    //Font size for cells
+    [ALApplozicSettings setChatCellTextFontSize:15];
+
+    [ALApplozicSettings setChannelCellTextFontSize:15];
 
 
     /***************************************  SEND RECEIVE MESSAGES SETTINGS  ***************************************/
-
+    [ALApplozicSettings showChannelMembersInfoInNavigationBar:YES];
     [ALApplozicSettings setSendMsgTextColor:[UIColor whiteColor]];
     [ALApplozicSettings setReceiveMsgTextColor:[UIColor grayColor]];
     [ALApplozicSettings setColorForReceiveMessages:[UIColor colorWithRed:255/255 green:255/255 blue:255/255 alpha:1]];
@@ -355,6 +361,10 @@
     [ALApplozicSettings setCustomMessageBackgroundColor:[UIColor lightGrayColor]];              /*  SET CUSTOM MESSAGE COLOR */
     [ALApplozicSettings setCustomMessageFontSize:14];                                     /*  SET CUSTOM MESSAGE FONT SIZE */
     [ALApplozicSettings setCustomMessageFont:@"Helvetica"];
+
+
+//    [ALApplozicSettings setChatCellFontTextStyle:UIFontTextStyleSubheadline];
+//    [ALApplozicSettings setChatChannelCellFontTextStyle:UIFontTextStyleSubheadline];
 
     //****************** DATE COLOUR : AT THE BOTTOM OF MESSAGE BUBBLE ******************/
     [ALApplozicSettings setDateColor:[UIColor colorWithRed:51.0/255 green:51.0/255 blue:51.0/255 alpha:0.5]];
@@ -455,7 +465,7 @@
 
     [ALApplozicSettings setUnreadCountLabelBGColor:[UIColor purpleColor]];
     [ALApplozicSettings setCustomClassName:@"ALChatManager"];                   /*  SET 3rd Party Class Name OR ALChatManager */
-    [ALUserDefaultsHandler setFetchConversationPageSize:20];                    /*  SET MESSAGE LIST PAGE SIZE  */ // DEFAULT VALUE 20
+    [ALUserDefaultsHandler setFetchConversationPageSize:60];                    /*  SET MESSAGE LIST PAGE SIZE  */ // DEFAULT VALUE 20
     [ALUserDefaultsHandler setUnreadCountType:1];                               /*  SET UNRAED COUNT TYPE   */ // DEFAULT VALUE 0
     [ALApplozicSettings setMaxTextViewLines:4];
     [ALUserDefaultsHandler setDebugLogsRequire:YES];                            /*   ENABLE / DISABLE LOGS   */
@@ -463,6 +473,10 @@
     [ALApplozicSettings setUserProfileHidden:NO];
     [ALApplozicSettings setFontFace:@"Helvetica"];
     [ALApplozicSettings setChatWallpaperImageName:@"<WALLPAPER NAME>"];
+    [ALApplozicSettings replyOptionEnabled:YES];
+    [ALApplozicSettings forwardOptionEnableOrDisable:YES];
+
+
     /****************************************************************************************************************/
 
 
@@ -498,6 +512,21 @@
 
     [ALApplozicSettings setChatListTabTitle:@""];
     [ALApplozicSettings setProfileTabTitle:@""];
+    // Hide attachment options in chat screen
+//    NSArray * attachmentOptionToHide = @[@":audio", @":video", @":location",@":shareContact"];
+//
+//    [ALApplozicSettings setHideAttachmentsOption:attachmentOptionToHide];
+
+    /********************************************* Attachment Plus Icon background color
+     *****************************************************************/
+    [ALApplozicSettings setBackgroundColorForAttachmentPlusIcon:[UIColor colorWithRed:0.0/255 green:0.0/255 blue:0.0/255 alpha:1]];
+
+    //Audio Recording View color
+    [ALApplozicSettings enableNewAudioDesign:YES];
+    [ALApplozicSettings setBackgroundColorForAudioRecordingView:[UIColor lightGrayColor]];
+    [ALApplozicSettings setColorForAudioRecordingText:[UIColor redColor]];
+    [ALApplozicSettings setColorForSlideToCancelText:[UIColor darkGrayColor]];
+    [ALApplozicSettings setFontForAudioView:@"HelveticaNeue"];
 }
 
 -(void)getApplicationBaseURL
