@@ -1,4 +1,4 @@
-# Applozic Cordova Chat Plugin for Ionic and PhoneGap 
+# Applozic Cordova Chat Plugin for Ionic and PhoneGap
 
 Applozic powers real time messaging across any device, any platform & anywhere in the world. Integrate our simple SDK to engage your users with image, file, location sharing and audio/video conversations.
 
@@ -12,30 +12,43 @@ This plugin is a wrapper around native code, so please make sure you test it on 
  Phonegap Plugin - https://github.com/AppLozic/Applozic-PhoneGap-Chat-Plugin
 
 ## Using
-    
-Install the plugin
 
-    $ cordova plugin add https://github.com/AppLozic/Applozic-Cordova-Ionic-PhoneGap-Chat-Plugin.git
-    
-    
-Note: For Ionic, use 
+Install the plugin for Phonegap/Cordova 
 
-	$ ionic cordova plugin add https://github.com/AppLozic/Applozic-Cordova-Ionic-PhoneGap-Chat-Plugin.git
+    $ cordova plugin add cordova-plugin-applozic
+
+Note: For Ionic, use
+
+    $ ionic cordova plugin add cordova-plugin-applozic
 
 ## Android
-Open /platforms/android/ folder in Android Studio.
-If you see gradle wrapper error then open gradle/wrapper/gradle-wrapper.properties
-Change distributionUrl to point to 2.14.1-all
-distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
 
+Open your `/YOUR_PROJECT_NAME/platforms/android/app/src/main/AndroidManifest.xml`
+
+And add the below entry tools to your `<manifest` tag
+
+```
+xmlns:tools="http://schemas.android.com/tools"
+```
+Example: After adding it will look like below
+
+```
+<?xml version='1.0' encoding='utf-8'?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+```
 
 ## iOS
 
-1) Open /platforms/ios/YOUR_PROJECT_NAME.xcworkspace in Xcode. 
+1) Open /platforms/ios/YOUR_PROJECT_NAME.xcworkspace in Xcode.
 
 
 ### Steps to integrate:
 
+Before calling any of applozic function from any file, you need to declare applozic variable at the end of that file
+```js
+   declare var applozic: any;
+```
 
 #### Login/Register User
 ```js
@@ -84,7 +97,7 @@ applozic.launchChat(function() {console.log("success");}, function () {console.l
 applozic.launchChatWithUserId(userId, function() {console.log("success");}, function () {console.log("error");});
 ```
 
-##### Launch Chat with specific Group 
+##### Launch Chat with specific Group
 
 ```
 applozic.launchChatWithGroupId(groupId, function() {console.log("success");}, function () {console.log("error");});
@@ -97,7 +110,7 @@ applozic.launchChatWithGroupId(groupId, function() {console.log("success");}, fu
 applozic.showAllRegisteredUsers(false, function() {}, function() {});
 // create a contacts array and pass it to addContacts function. Below is the sample:               
 var contacts = [
-                    {'userId' : 'adarsh', 'displayName' : 'Adarsh Kumar'}, 
+                    {'userId' : 'adarsh', 'displayName' : 'Adarsh Kumar'},
                     {'userId' : 'ranjeet', 'displayName' : 'Ranjeet Priyadarshi'}
                 ];
 applozic.addContacts(contacts, function() {}, function() {});
@@ -117,14 +130,14 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
    Goto /platforms/android/build.gradle
    Add the following under buildscript -> dependencies
    ```
-   classpath 'com.google.gms:google-services:3.0.0'
+   classpath 'com.google.gms:google-services:4.0.1'
    ```
-   
+
    Add the following at the bottom of the file:
    ```
    apply plugin: 'com.google.gms.google-services'
    ```
-   
+
    After adding, it will look something like this:
    ```
    buildscript {
@@ -132,34 +145,34 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
            mavenCentral()
            jcenter()
        }
-       
+
        // Switch the Android Gradle plugin version requirement depending on the
        // installed version of Gradle. This dependency is documented at
        // http://tools.android.com/tech-docs/new-build-system/version-compatibility
        // and https://issues.apache.org/jira/browse/CB-8143
        dependencies {
-          classpath 'com.android.tools.build:gradle:2.2.1'
-          classpath 'com.google.gms:google-services:3.0.0'
+         classpath 'com.android.tools.build:gradle:3.3.0'
+         classpath 'com.google.gms:google-services:4.0.1'
        }
    }
 
    apply plugin: 'com.google.gms.google-services'
    ```
-    
+
    From login success callback, call applozic.registerPushNotification(function() {}, function(){});
-   
-   For push notifications, you must have a Firebase account: 
+
+   For push notifications, you must have a Firebase account:
    Signup to https://console.firebase.google.com/ and create your application and generate push notification services file.
-   
+
    Download google-services.json from your Firebase Console and paste it to /platforms/android/ folder
-   
+
    Go to Applozic Dashboard, update the FCM/GCM Server Key from Firebase account to your Applozic application.
    "Edit Application -> Push Notification -> Android -> FCM/GCM Server Key"
 
 
 
 ##### iOS
-    
+
    Open AppDelegate.m file under /platforms/ios/YOUR_PROJECT/Classes/
    Add code as mentioned in the following documentation:
    https://www.applozic.com/docs/ios-chat-sdk.html#step-4-push-notification-setup
@@ -180,7 +193,7 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
             };
      applozic.createGroup(group, function() {}, function() {});
   ```
-  
+
   ##### Add Group Member
   ```
     var groupDetails = {
@@ -190,8 +203,8 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
     }
     applozic.addGroupMember(groupDetails, function() {}, function() {});
   ```
-  
-  
+
+
   ##### Remove Group Member
   ```
     var groupDetails = {
@@ -220,7 +233,7 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
                        // 'groupId': groupKey,  // Set groupId for which you want to launch chat, use either userId or groupId
                         'topicDetail': JSON.stringify(topicDetail)
                     };
-                    
+
                     applozic.startTopicBasedChat(conversation, function() {}, function() {});
     ```
 
@@ -249,7 +262,7 @@ applozic.logout(function() {console.log("success");}, function () {console.log("
 #### Unread count for user
 
 ```
-   var userId = 'USER_ID'; //pass UserId with which unread count 
+   var userId = 'USER_ID'; //pass UserId with which unread count
    applozic.getUnreadCountForUser(userId,function(response){
      var count = response;
     },
@@ -276,20 +289,27 @@ Install iOS or Android platform
 
     cordova platform add ios
     cordova platform add android
-    
+
 Run the code
 
-    cordova run 
-    
-    
-    
-     
-     
+    cordova run
+
+
+
   # Resolving Errors
-    
+
+  ### Gradle wrapper error
+
+   Open /platforms/android/ folder in Android Studio.
+   If you see gradle wrapper error then open gradle/wrapper/gradle-wrapper.properties
+  Change distributionUrl to point to 4.10.3-all
+
+  distributionUrl=https\://services.gradle.org/distributions/gradle-4.10.3-all.zip
+
+
    ### Android support libraries/google versions conflict
-    
-    
+
+
 If using multiple plugins that use support libraries or google dependencies, you may get support libraries or firebase version conflict issues in android. Use the below gradle script in your app/platform/android/build.gradle file's dependencies :
 
      dependencies {
@@ -302,10 +322,10 @@ If using multiple plugins that use support libraries or google dependencies, you
 
         	  if (requested.group == 'com.android.support' && requested.name != 'multidex') {
          		   details.useVersion '27.1.1'  //use a common support libraries version here
-			   
+
       	           }
-		   
-                 } 
+
+                 }
 		 }  
           }
 
