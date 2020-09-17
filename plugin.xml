@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin id="cordova-plugin-applozic"
-    version="1.4.0"
+    version="1.5.0"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns="http://www.phonegap.com/ns/plugins/1.0">
 
@@ -111,7 +111,7 @@
               <source url="https://github.com/CocoaPods/Specs.git"/>
             </config>
             <pods use-frameworks="true">
-              <pod name="Applozic" spec="~> 7.7.0"/>
+              <pod name="Applozic" spec="~> 7.10.0"/>
             </pods>
           </podspec>
 
