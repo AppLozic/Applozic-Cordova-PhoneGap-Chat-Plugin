@@ -11,20 +11,21 @@ This plugin is a wrapper around native code, so please make sure you test it on 
  Web Plugin - https://github.com/AppLozic/Applozic-Web-Plugin
  Phonegap Plugin - https://github.com/AppLozic/Applozic-PhoneGap-Chat-Plugin
 
+## Prerequisites
+
+### iOS
+* Apps must target iOS 10 or later
+* Xcode 12 or later required
+
 ## Using
 
-Install the plugin for Phonegap/Cordova 
+Install the plugin for Phonegap/Cordova
 
     $ cordova plugin add cordova-plugin-applozic
 
 Note: For Ionic, use
 
     $ ionic cordova plugin add cordova-plugin-applozic
-
-AndroidX supported plugin:
- If using latest version of ionic with androidX support, add the plugin as below:
- 
-     $ ionic cordova plugin add cordova-plugin-applozic
 
 ## Android
 
@@ -129,9 +130,9 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
 ```
 
 
-#### Push Notification Setup
+### Push Notification Setup
 
-##### Android
+#### Android
    Goto /platforms/android/build.gradle
    Add the following under buildscript -> dependencies
    ```
@@ -171,16 +172,14 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
 
    Download google-services.json from your Firebase Console and paste it to /platforms/android/ folder
 
-   Go to Applozic Dashboard, update the FCM/GCM Server Key from Firebase account to your Applozic application.
-   "Edit Application -> Push Notification -> Android -> FCM/GCM Server Key"
+   Go to Applozic console, update the FCM Server Key from Firebase account to your Applozic account push notification section [here](https://console.applozic.com/settings/pushnotification)
 
 
+#### iOS
 
-##### iOS
-
-   Open AppDelegate.m file under /platforms/ios/YOUR_PROJECT/Classes/
-   Add code as mentioned in the following documentation:
-   https://www.applozic.com/docs/ios-chat-sdk.html#step-4-push-notification-setup
+* Creating APNs certificates and upload development and distributions certificates in applozic console you can refer this link [here](https://docs.applozic.com/docs/ios-push-notification#creating-apns-certificates)
+* Open AppDelegate.m file under /platforms/ios/YOUR_PROJECT/Classes/
+   Add code as mentioned in the following documentation [here](https://docs.applozic.com/docs/ios-push-notification#push-notifications)
 
 
 #### Group
@@ -222,7 +221,7 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
 
 #### Topic Based Chat
 
-    ```
+ ```
        var topicDetail = {
                         'title': 'Hyundai Electric i20', // Product title
                         'subtitle': 'electric car',      // Product subTitle or Product Id
@@ -240,7 +239,7 @@ Set the following in platforms/android/assets/applozic-settings.json properties 
                     };
 
                     applozic.startTopicBasedChat(conversation, function() {}, function() {});
-    ```
+ ```
 
 
 #### Logout
@@ -251,8 +250,6 @@ applozic.logout(function() {console.log("success");}, function () {console.log("
 
 ### Unread count
 
-```
-```
 #### Total unreadcount
 
 ```

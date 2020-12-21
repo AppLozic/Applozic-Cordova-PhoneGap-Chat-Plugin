@@ -1,3 +1,3 @@
 dependencies {
-    implementation 'com.applozic.communication.uiwidget:mobicomkitui:5.90'
+    implementation 'com.applozic.communication.uiwidget:mobicomkitui:5.95.1'
 }
