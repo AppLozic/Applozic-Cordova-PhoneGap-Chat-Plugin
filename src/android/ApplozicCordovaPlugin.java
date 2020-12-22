@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.applozic.mobicomkit.Applozic;
+import com.applozic.mobicomkit.listners.AlLoginHandler;
 import com.applozic.mobicomkit.api.account.register.RegisterUserClientService;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
@@ -39,6 +40,8 @@ import com.applozic.mobicomkit.channel.database.ChannelDatabaseService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.phonegap.GetMessageListTask.CustomConversation;
 import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicommons.task.AlTask;
+import com.applozic.mobicomkit.listners.AlLogoutHandler;
 
 import java.util.List;
 
@@ -66,28 +69,24 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
 
         final CallbackContext callback = callbackContext;
 
-        if (action.equals("login")) {
-            String userJson = data.getString(0);
-            User user = (User) GsonUtils.getObjectFromJson(userJson, User.class);
+          if (action.equals("login")) {
+              String userJson = data.getString(0);
+              User user = (User) GsonUtils.getObjectFromJson(userJson, User.class);
 
-            Applozic.init(context, user.getApplicationId());
+              Applozic.init(context, user.getApplicationId());
 
-            UserLoginTask.TaskListener listener = new UserLoginTask.TaskListener() {
+              Applozic.connectUser(context, user, new AlLoginHandler() {
+                             @Override
+                             public void onSuccess(RegistrationResponse registrationResponse, Context context) {
+                               callback.success(GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
+                             }
 
-                @Override
-                public void onSuccess(RegistrationResponse registrationResponse, Context context) {
-                    callback.success(GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
-                }
-
-                @Override
-                public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
-                    //If any failure in registration the callback  will come here
-                    callback.error(GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
-                }
-            };
-
-            new UserLoginTask(user, listener, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else if (action.equals("registerPushNotification")) {
+                             @Override
+                             public void onFailure(RegistrationResponse registrationResponse, Exception exception) {
+                               callback.error(GsonUtils.getJsonFromObject(registrationResponse, RegistrationResponse.class));
+                          }
+                });
+          } else if (action.equals("registerPushNotification")) {
             PushNotificationTask pushNotificationTask = null;
             PushNotificationTask.TaskListener listener = new PushNotificationTask.TaskListener() {
                 @Override
@@ -101,7 +100,7 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
                 }
             };
             pushNotificationTask = new PushNotificationTask(Applozic.getInstance(context).getDeviceRegistrationId(), listener, context);
-            pushNotificationTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            AlTask.execute(pushNotificationTask);
         } else if (action.equals("isLoggedIn")) {
             callbackContext.success(String.valueOf(MobiComUserPreference.getInstance(context).isLoggedIn()));
         } else if (action.equals("getUnreadCount")) {
@@ -157,7 +156,6 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
             };
 
             new AlChannelInfoTask(context, Integer.parseInt(data.getString(0)), null, false, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         } else if (action.equals("launchChatWithClientGroupId")) {
 
             AlChannelInfoTask.ChannelInfoListener listener = new AlChannelInfoTask.ChannelInfoListener() {
@@ -181,7 +179,6 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
             };
 
             new AlChannelInfoTask(context, null, data.getString(0), false, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         } else if (action.equals("getGroupInfoWithClientGroupId")) {
             AlChannelInfoTask.ChannelInfoListener listener = new AlChannelInfoTask.ChannelInfoListener() {
                 @Override
@@ -200,7 +197,6 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
             };
 
             new AlChannelInfoTask(context, null, data.getString(0), true, listener).execute();
-
         } else if (action.equals("getGroupInfoWithGroupId")) {
 
             AlChannelInfoTask.ChannelInfoListener listener = new AlChannelInfoTask.ChannelInfoListener() {
@@ -220,7 +216,6 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
             };
 
             new AlChannelInfoTask(context, Integer.parseInt(data.getString(0)), null, true, listener).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         } else if (action.equals("startNew")) {
             Intent intent = new Intent(context, MobiComKitPeopleActivity.class);
             cordova.getActivity().startActivity(intent);
@@ -276,7 +271,6 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
 
             GetMessageListTask task = new GetMessageListTask(data.getString(0), listener, context);
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         } else if (action.equals("createGroup")) {
 
             ChannelInfo channelInfo = null;
@@ -299,8 +293,8 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
                 }
             };
 
-            new AlChannelCreateAsyncTask(context, channelInfo, taskListenerInterface).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
+            AlChannelCreateAsyncTask alChannelCreateAsyncTask = new AlChannelCreateAsyncTask(context, channelInfo, taskListenerInterface);
+            AlTask.execute(alChannelCreateAsyncTask);
         } else if (action.equals("addGroupMember")) {
             Gson gson = new Gson();
             Type type = new TypeToken<Map<String, String>>() {
@@ -327,7 +321,7 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
             Integer channelKey = getChannelKey(context, channelDetails);
 
             AlChannelAddMemberTask applozicChannelAddMemberTask = new AlChannelAddMemberTask(context, channelKey, channelDetails.get("userId"), channelAddMemberListener);//pass channel key and userId whom you want to add to channel
-            applozicChannelAddMemberTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            AlTask.execute(applozicChannelAddMemberTask);
 
         } else if (action.equals("removeGroupMember")) {
             Gson gson = new Gson();
@@ -350,7 +344,7 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
             Integer channelKey = getChannelKey(context, channelDetails);
 
             ApplozicChannelRemoveMemberTask applozicChannelRemoveMemberTask = new ApplozicChannelRemoveMemberTask(context, channelKey, channelDetails.get("userId"), channelRemoveMemberListener);//pass channelKey and userId whom you want to remove from channel
-            applozicChannelRemoveMemberTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            AlTask.execute(applozicChannelRemoveMemberTask);
         } else if (action.equals("enableTopicBasedChat")) {
             ApplozicClient.getInstance(context).setContextBasedChat(data.getBoolean(0));
         } else if (action.equals("getContactById")) {
@@ -388,10 +382,19 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
                 }
             };
             applozicConversationCreateTask = new ApplozicConversationCreateTask(context, conversationCreateListener, conversation);
-            applozicConversationCreateTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            AlTask.execute(applozicConversationCreateTask);
         } else if (action.equals("logout")) {
-            new UserClientService(cordova.getActivity()).logout();
-            callbackContext.success(response);
+            Applozic.logoutUser(cordova.getActivity(), new AlLogoutHandler() {
+            @Override
+            public void onSuccess(Context context) {
+              callbackContext.success(response);
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+              callback.error("Some internal error occurred");
+            }
+        });
         } else {
             return false;
         }
