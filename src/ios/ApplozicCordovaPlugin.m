@@ -25,6 +25,7 @@
 #import <Applozic/ApplozicClient.h>
 #import <Applozic/AlChannelResponse.h>
 #import <Applozic/ALNotificationHelper.h>
+#import <Applozic/ALMessageDBService.h>
 
 @implementation ApplozicCordovaPlugin
 
@@ -575,14 +576,26 @@
 {
 
     ALUserService * alUserService = [[ALUserService alloc] init];
-    NSNumber * totalUnreadCount = [alUserService getTotalUnreadCount];
-
-
-    CDVPluginResult* result = [CDVPluginResult
-                               resultWithStatus:CDVCommandStatus_OK
-                               messageAsString:[totalUnreadCount stringValue]];
-    [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
-
+  if (![ALUserDefaultsHandler isInitialMessageListCallDone]) {
+      ALMessageDBService * messageDBService = [[ALMessageDBService alloc] init];
+      [messageDBService getLatestMessages:NO
+                    withCompletionHandler:^(NSMutableArray *messageListArray, NSError *error) {
+          CDVPluginResult* result;
+          if (error) {
+              result = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Failed to fetch the unread count"];
+          } else {
+              NSNumber * totalUnreadCount = [alUserService getTotalUnreadCount];
+              result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                         messageAsString:[totalUnreadCount stringValue]];
+          }
+          [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+      }];
+  } else {
+      NSNumber * totalUnreadCount = [alUserService getTotalUnreadCount];
+      CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                  messageAsString:[totalUnreadCount stringValue]];
+      [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
+  }
 }
 
 - (void) getUnreadCountForGroup:(CDVInvokedUrlCommand*)command
