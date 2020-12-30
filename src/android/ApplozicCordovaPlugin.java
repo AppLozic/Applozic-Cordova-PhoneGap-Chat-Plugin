@@ -41,6 +41,7 @@ import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.phonegap.GetMessageListTask.CustomConversation;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicommons.task.AlTask;
+import com.applozic.mobicomkit.api.conversation.AlTotalUnreadCountTask;
 import com.applozic.mobicomkit.listners.AlLogoutHandler;
 
 import java.util.List;
@@ -104,7 +105,18 @@ public class ApplozicCordovaPlugin extends CordovaPlugin {
         } else if (action.equals("isLoggedIn")) {
             callbackContext.success(String.valueOf(MobiComUserPreference.getInstance(context).isLoggedIn()));
         } else if (action.equals("getUnreadCount")) {
-            callbackContext.success(String.valueOf(new MessageDatabaseService(context).getTotalUnreadCount()));
+               AlTotalUnreadCountTask alTotalUnreadCountTask = new AlTotalUnreadCountTask(context, new AlTotalUnreadCountTask.TaskListener() {
+                                    @Override
+                                    public void onSuccess(Integer unreadCount) {
+                                      callback.success(String.valueOf(unreadCount));
+                                    }
+
+                                    @Override
+                                    public void onFailure(String error) {
+                                      callback.error(error);
+                                    }
+                 });
+              AlTask.execute(alTotalUnreadCountTask);
         } else if (action.equals("getUnreadCountForUser")) {
             String userId = data.getString(0);
             String count = String.valueOf(new MessageDatabaseService(context).getUnreadMessageCountForContact(userId));
