@@ -48,7 +48,7 @@ public class GetMessageListTask extends AsyncTask<Void, Void, List<CustomConvers
             isLatestMessageRequest = true;
             messageList = mobiComConversationService.getLatestMessagesGroupByPeople(model.getCreatedAtTime(), model.getSearchString());
         } else {
-            messageList = new MobiComConversationService(context).getMessages(model.getStartTime(), model.getEndTime(), new ContactDatabase(context).getContactById(model.getContactId()), channel, model.getConversationId(), model.isSkipRead(), false);
+            messageList = new MobiComConversationService(context).getMessages(model.getStartTime(), model.getEndTime(), new ContactDatabase(context).getContactById(model.getContactId()), channel, model.getConversationId());
         }
 
         Collections.sort(messageList, new Comparator<Message>() {
@@ -60,7 +60,7 @@ public class GetMessageListTask extends AsyncTask<Void, Void, List<CustomConvers
 
         List<String> recList = new ArrayList<String>();
         List<CustomConversation> mList = new ArrayList<CustomConversation>();
-
+                
        if (!messageList.isEmpty()) {
             if (isLatestMessageRequest) {
                 for (Message message : messageList) {
